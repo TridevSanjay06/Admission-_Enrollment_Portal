@@ -9,11 +9,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="Styles/tokens.css">
+    <link rel="stylesheet" href="Styles/AllShouldFollow.css">
     <link rel="stylesheet" href="Styles/navbar.css">
     <link rel="stylesheet" href="Styles/loginpage.css">
     <link rel="stylesheet" href="Styles/general.css">
+    <link rel="stylesheet" href="Styles/general-overrides.css">
     <link rel="stylesheet" href="Styles/enrollpage.css">
-    <link rel="stylesheet" href="Styles/AllShouldFollow.css">
     <link rel="stylesheet" href="static/css/chatbot.css">
   </head>
     <body>
@@ -152,8 +154,15 @@
               successMessage.style.display = 'block';
               form.reset();
             } else {
-              // Show error message
-              errorMessage.textContent = data.error || 'There was an error submitting your application. Please try again.';
+              // Show detailed error message
+              let errorText = data.error || 'There was an error submitting your application. Please try again.';
+              
+              // If there are validation details, show them
+              if (data.details && Array.isArray(data.details)) {
+                errorText = 'Validation failed: ' + data.details.map(err => err.msg || err.message).join(', ');
+              }
+              
+              errorMessage.textContent = errorText;
               errorMessage.style.display = 'block';
             }
           })

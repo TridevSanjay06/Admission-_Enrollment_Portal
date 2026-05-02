@@ -1,0 +1,17 @@
+:root {
+  --font-sans: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --color-cream: #fffaeb;
+  --color-navy: #1a3986;
+  --color-navy-dark: #0f2454;
+  --color-accent: #e85d04;
+  --color-text: #1a1a1a;
+  --color-muted: #5c5c5c;
+  --color-white: #ffffff;
+  --shadow-sm: 0 1px 2px rgba(26, 57, 134, 0.06);
+  --shadow-md: 0 8px 24px rgba(26, 57, 134, 0.12);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --nav-h: 72px;
+  --transition: 0.22s ease;
+}

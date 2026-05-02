@@ -3,101 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Notifications - AMS</title>
+    <title>Test Email — AMS</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .test-form {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-form { background: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
         .test-form input, .test-form select, .test-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
+            width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;
         }
         .test-form button {
-            background: #4CAF50;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
+            background: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;
         }
-        .test-form button:hover {
-            background: #45a049;
-        }
-        .notification-preview {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #4CAF50;
-        }
-        .whatsapp-preview {
-            background: #dcf8c6;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            white-space: pre-line;
-            margin: 10px 0;
-        }
-        .email-preview {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        #result {
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        .success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+        .test-form button:hover { background: #45a049; }
+        .email-preview { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 10px 0; }
+        #result { margin: 20px 0; padding: 15px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🧪 Test Email & WhatsApp Notifications</h1>
-        <p>Use this form to test the complete enrollment notifications with all form data:</p>
+        <h1>Test enrollment email</h1>
+        <p>POSTs to <code>/api/enroll</code>. Staff receive mail at <code>ENROLLMENT_NOTIFY_EMAIL</code> or <code>SCHOOL_FROM_EMAIL</code>.</p>
 
         <div class="test-form">
-            <h3>📝 Test Enrollment Form</h3>
+            <h3>Test form</h3>
             <form id="testForm">
                 <input type="text" id="parent_name" placeholder="Parent Name *" required>
                 <input type="email" id="email" placeholder="Parent's Email *" required>
                 <input type="tel" id="phone" placeholder="Parent's Contact Number *" required>
-                <input type="text" id="city" placeholder="Current City of Residence *" required>
-                
+                <input type="text" id="city" placeholder="Current City *" required>
                 <select id="grade" required>
-                    <option value="">Select Child's Grade *</option>
+                    <option value="">Select Grade *</option>
                     <option value="kg">Kindergarten</option>
                     <option value="1">Grade 1</option>
                     <option value="2">Grade 2</option>
@@ -107,76 +44,23 @@
                     <option value="6">Grade 6</option>
                     <option value="7">Grade 7</option>
                 </select>
-                
-                <textarea id="message" placeholder="Enter Message (Optional)" rows="3"></textarea>
-                
-                <button type="submit">🚀 Test Notifications</button>
+                <textarea id="message" placeholder="Message (optional)" rows="3"></textarea>
+                <button type="submit">Submit test enrollment</button>
             </form>
         </div>
 
         <div id="result" style="display: none;"></div>
 
-        <div class="notification-preview">
-            <h3>📱 WhatsApp Message Preview</h3>
-            <div class="whatsapp-preview">
-🎓 <strong>Alpha Model's International School</strong>
-
-Dear [Parent Name],
-
-Thank you for submitting your application for [Grade]! 
-
-📋 <strong>Application Details:</strong>
-• Reference Number: [Generated Reference]
-• Parent Name: [Parent Name]
-• Parent's Contact: [Phone Number]
-• Current City: [City]
-• Child's Grade Applied: [Grade]
-• Application Date: [Current Date]
-• Status: Under Review
-• Additional Message: [Message if provided]
-
-We have received your application and our admissions team will review it within 24-48 hours. You will receive an email with further instructions.
-
-📞 <strong>Contact Information:</strong>
-• Admissions: 9949128732
-• Email: admissions@alphamodels.in
-• Location: Beeramguda, Telangana
-
-📍 <strong>School Address:</strong>
-Alpha Model's International School
-Plot no: 395, Road no: 06, Raghavendra Colony
-Beeramguda, Telangana 502032
-
-We look forward to welcoming your child to our school family!
-
-Best regards,
-Admissions Team
-Alpha Model's International School
-            </div>
-
-            <h3>📧 Email Preview</h3>
-            <div class="email-preview">
-                <p><strong>Subject:</strong> Application Confirmation - [Reference Number]</p>
-                <p><strong>From:</strong> Alpha Model's International School</p>
-                <p><strong>To:</strong> [Parent's Email]</p>
-                <hr>
-                <p>The email includes:</p>
-                <ul>
-                    <li>Professional HTML formatting with school branding</li>
-                    <li>Complete application details (all form fields)</li>
-                    <li>Reference number and application date</li>
-                    <li>Next steps in the admission process</li>
-                    <li>Complete contact information</li>
-                    <li>School address and directions</li>
-                </ul>
-            </div>
+        <div class="email-preview">
+            <p><strong>Subject:</strong> New Application Received — [reference]</p>
+            <p><strong>To:</strong> ENROLLMENT_NOTIFY_EMAIL / SCHOOL_FROM_EMAIL</p>
+            <p><strong>Reply-To:</strong> parent email from form</p>
         </div>
     </div>
 
     <script>
         document.getElementById('testForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const formData = {
                 parent_name: document.getElementById('parent_name').value,
                 email: document.getElementById('email').value,
@@ -185,39 +69,29 @@ Alpha Model's International School
                 grade: document.getElementById('grade').value,
                 message: document.getElementById('message').value
             };
-
             const resultDiv = document.getElementById('result');
             resultDiv.style.display = 'block';
             resultDiv.className = '';
-            resultDiv.innerHTML = '⏳ Sending notifications...';
+            resultDiv.textContent = 'Submitting…';
 
             fetch('/api/enroll', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             })
             .then(response => response.json())
             .then(data => {
                 if (data.ok) {
                     resultDiv.className = 'success';
-                    resultDiv.innerHTML = `
-                        ✅ <strong>Test Successful!</strong><br>
-                        Reference Number: <strong>${data.reference_number}</strong><br>
-                        Applicant ID: ${data.applicant_id}<br><br>
-                        📧 Check your email: ${formData.email}<br>
-                        📱 Check your WhatsApp: ${formData.phone}<br><br>
-                        Both notifications have been sent with all the form data!
-                    `;
+                    resultDiv.innerHTML = 'OK — Reference: <strong>' + data.reference_number + '</strong>. Check server logs for email status and staff inbox.';
                 } else {
                     resultDiv.className = 'error';
-                    resultDiv.innerHTML = `❌ Error: ${data.error}`;
+                    resultDiv.textContent = 'Error: ' + (data.error || 'unknown');
                 }
             })
             .catch(error => {
                 resultDiv.className = 'error';
-                resultDiv.innerHTML = `❌ Network Error: ${error.message}`;
+                resultDiv.textContent = 'Network error: ' + error.message;
             });
         });
     </script>

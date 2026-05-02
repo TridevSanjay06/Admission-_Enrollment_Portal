@@ -3,12 +3,9 @@ const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 
-// Import services
 const DatabaseService = require('../services/database');
-const WhatsAppService = require('../services/whatsapp');
 const EmailService = require('../services/email');
 
-// Validation rules
 const enrollmentValidation = [
   body('parent_name')
     .trim()
@@ -19,8 +16,8 @@ const enrollmentValidation = [
     .normalizeEmail()
     .withMessage('Please provide a valid email address'),
   body('phone')
-    .matches(/^[\+]?[1-9][\d]{0,15}$/)
-    .withMessage('Please provide a valid phone number'),
+    .matches(/^[+]?[0-9]{10,15}$/)
+    .withMessage('Please provide a valid phone number (10-15 digits)'),
   body('city')
     .trim()
     .isLength({ min: 2, max: 100 })
@@ -35,10 +32,8 @@ const enrollmentValidation = [
     .withMessage('Message must not exceed 1000 characters')
 ];
 
-// POST /api/enroll - Handle enrollment form submission
 router.post('/', enrollmentValidation, async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -48,19 +43,10 @@ router.post('/', enrollmentValidation, async (req, res) => {
       });
     }
 
-    const {
-      parent_name,
-      email,
-      phone,
-      city,
-      grade,
-      message = ''
-    } = req.body;
+    const { parent_name, email, phone, city, grade, message = '' } = req.body;
 
-    // Generate unique reference number
     const referenceNumber = `AMS${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
 
-    // Create applicant object
     const applicant = {
       id: uuidv4(),
       reference_number: referenceNumber,
@@ -74,63 +60,66 @@ router.post('/', enrollmentValidation, async (req, res) => {
       created_at: new Date().toISOString()
     };
 
-    // Save to database
     const dbResult = await DatabaseService.saveApplicant(applicant);
     if (!dbResult.success) {
-      console.error('Database error:', dbResult.error);
+      console.error('[enroll] Database error:', dbResult.error);
       return res.status(500).json({
         ok: false,
         error: 'Failed to save application. Please try again.'
       });
     }
 
-    // Send notifications asynchronously (don't wait for them)
-    console.log('📧 Sending notifications...');
-    Promise.allSettled([
-      WhatsAppService.sendConfirmation(phone, referenceNumber, parent_name, grade, applicant),
-      EmailService.sendConfirmation(email, applicant)
-    ]).then(results => {
-      const [whatsappResult, emailResult] = results;
-      
-      console.log('📱 WhatsApp result:', whatsappResult.status, whatsappResult.value || whatsappResult.reason);
-      console.log('📧 Email result:', emailResult.status, emailResult.value || emailResult.reason);
-      
-      if (whatsappResult.status === 'rejected') {
-        console.error('WhatsApp notification failed:', whatsappResult.reason);
-      }
-      if (emailResult.status === 'rejected') {
-        console.error('Email notification failed:', emailResult.reason);
-      }
-    });
+    Promise.resolve()
+      .then(() => EmailService.sendEnrollmentEmails(applicant))
+      .then((result) => {
+        if (result.admin?.success) {
+          console.log('[enroll] Admin notification email sent');
+        } else {
+          console.error('[enroll] Admin notification email failed:', result.admin?.error || 'unknown');
+        }
 
-    // Return success response immediately
-    res.json({
+        if (result.parent?.success) {
+          console.log('[enroll] Parent confirmation email sent');
+        } else {
+          console.error('[enroll] Parent confirmation email failed:', result.parent?.error || 'unknown');
+        }
+      })
+      .catch((error) => {
+        console.error('[enroll] Email async error:', error.message || error);
+      });
+
+    return res.json({
       ok: true,
       message: 'Application submitted successfully!',
       reference_number: referenceNumber,
       applicant_id: applicant.id
     });
-
   } catch (error) {
-    console.error('Enrollment error:', error);
-    res.status(500).json({
+    console.error('[enroll] Enrollment error:', error);
+    return res.status(500).json({
       ok: false,
       error: 'Internal server error. Please try again later.'
     });
   }
 });
 
-// GET /api/enroll/stats - Get enrollment statistics (for admin)
 router.get('/stats', async (req, res) => {
   try {
-    const stats = await DatabaseService.getEnrollmentStats();
-    res.json({
+    const result = await DatabaseService.getEnrollmentStats();
+    if (!result.success) {
+      return res.status(500).json({
+        ok: false,
+        error: result.error || 'Failed to fetch statistics'
+      });
+    }
+
+    return res.json({
       ok: true,
-      stats
+      stats: result.stats
     });
   } catch (error) {
-    console.error('Stats error:', error);
-    res.status(500).json({
+    console.error('[enroll] Stats error:', error);
+    return res.status(500).json({
       ok: false,
       error: 'Failed to fetch statistics'
     });

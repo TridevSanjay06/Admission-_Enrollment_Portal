@@ -1,0 +1,18 @@
+/* Fix legacy fixed widths so main / other pages span full viewport */
+
+.grid-one {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.grid-four {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.grid-zero-enroll {
+  width: 100% !important;
+  max-width: 100% !important;
+}

@@ -1,0 +1,9 @@
+/* Enroll-specific table polish; layout in modern-overrides.css */
+
+.contact-box td {
+  border-color: rgba(26, 57, 134, 0.08);
+}
+
+.contact-box td a:hover {
+  color: var(--color-navy);
+}

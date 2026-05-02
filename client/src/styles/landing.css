@@ -1,4 +1,4 @@
-/* Landing hero — full viewport width & height (no fixed px width) */
+/* Landing hero — fluid layout; detailed rules extended in modern-overrides.css */
 
 .login-grid-one {
   width: 100%;
@@ -6,7 +6,7 @@
   flex: 1 1 auto;
   min-height: calc(100vh - var(--nav-h));
   min-height: calc(100dvh - var(--nav-h));
-  background-color: var(--color-cream);
+  background: var(--color-cream);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -14,7 +14,6 @@
   gap: clamp(2rem, 5vw, 4rem);
   padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 2.5rem);
   flex-wrap: wrap;
-  box-sizing: border-box;
 }
 
 .grid-block-one {
