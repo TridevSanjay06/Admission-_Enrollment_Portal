@@ -1,4 +1,4 @@
-# Alpha Model's International School Admission System
+# Admission Enrollment Portal
 
 A complete web-based admission system for Alpha Model's International School with automated notifications, database storage, and an intelligent chatbot.
 
@@ -6,19 +6,10 @@ A complete web-based admission system for Alpha Model's International School wit
 
 ### ✅ Core Functionality
 - **Online Admission Form**: Complete enrollment form with validation
-- **WhatsApp Notifications**: Instant confirmation via Twilio Sandbox
 - **Email Notifications**: Professional email confirmations via Gmail SMTP
 - **Database Storage**: SQLite database for applicant management
 - **Chatbot Widget**: AI-powered FAQ assistant (bottom-right corner)
 - **Mobile Responsive**: Works perfectly on all devices
-
-### 📱 WhatsApp Integration
-- **Complete Form Data**: All enrollment fields included in messages
-- **Reference Numbers**: Unique application tracking
-- **Professional Formatting**: School branding and structured layout
-- **Real-time Delivery**: Instant confirmation upon form submission
-- **Phone Validation**: Automatic E.164 format conversion
-- **Parent Details**: Name, contact, city, grade, and custom messages
 
 ### 📧 Email Integration
 - **Professional HTML Templates**: Beautiful, responsive email design
