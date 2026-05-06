@@ -16,12 +16,48 @@ console.log('[env] SCHOOL_FROM_EMAIL :', process.env.SCHOOL_FROM_EMAIL  || '❌ 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const clientDist = path.join(__dirname, 'client', 'dist');
 const reactIndex = path.join(clientDist, 'index.html');
 const serveReact = fs.existsSync(reactIndex);
 
 const EmailService = require('./services/email');
+
+// ── CORS ──────────────────────────────────────────────────────────
+// In production, only allow origins listed in ALLOWED_ORIGINS (comma-separated).
+// In development, allow localhost on common ports as a convenience fallback.
+const buildAllowedOrigins = () => {
+  const raw = (process.env.ALLOWED_ORIGINS || '').trim();
+  if (raw) {
+    return raw.split(',').map((o) => o.trim()).filter(Boolean);
+  }
+  if (NODE_ENV !== 'production') {
+    return [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:3000'
+    ];
+  }
+  return [];
+};
+
+const allowedOrigins = buildAllowedOrigins();
+console.log('[cors] Allowed origins:', allowedOrigins.length ? allowedOrigins : '(none — same-origin only)');
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no Origin header (e.g. mobile apps, server-to-server, curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS policy: origin '${origin}' is not allowed`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+// ──────────────────────────────────────────────────────────────────
 
 app.use(
   helmet({
@@ -32,7 +68,7 @@ app.use(
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'https:'],
         scriptSrc: ["'self'", "'unsafe-inline'"],
-        connectSrc: ["'self'"]
+        connectSrc: ["'self'", ...allowedOrigins]
       }
     }
   })
@@ -45,7 +81,8 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-app.use(cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight for all routes
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 

@@ -3,3 +3,10 @@ dist/
 client/node_modules/
 client/dist/
 .env
+.env.local
+client/.env.local
+
+# SQLite database — never commit, data lives on the server
+*.db
+*.db-shm
+*.db-wal

@@ -1,0 +1,60 @@
+services:
+  - type: web
+    name: ams-backend
+    runtime: node
+    region: oregon          # Change to: frankfurt, singapore, ohio, or virginia if closer to your users
+    plan: free              # Upgrade to starter ($7/mo) for persistent disk + always-on
+
+    # ── Build ─────────────────────────────────────────────────────────
+    rootDir: .              # Backend lives at the repo root
+    buildCommand: npm install
+    startCommand: node server.js
+
+    # ── Health check ──────────────────────────────────────────────────
+    healthCheckPath: /api/health
+
+    # ── Environment variables ─────────────────────────────────────────
+    # IMPORTANT: Do NOT commit real secrets here.
+    # Set sensitive values directly in the Render dashboard → Environment tab.
+    # The values below are safe defaults / placeholders only.
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 10000          # Render routes external traffic to this port automatically
+
+      # ── CORS ────────────────────────────────────────────────────────
+      # Add your Vercel frontend URL here after the first Vercel deploy.
+      # Example: https://ams-frontend.vercel.app
+      - key: ALLOWED_ORIGINS
+        value: ""             # FILL IN: your Vercel URL(s), comma-separated
+
+      # ── SMTP (Gmail) ────────────────────────────────────────────────
+      # Set these in the Render dashboard – never hardcode passwords here.
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_SECURE
+        value: "false"
+      - key: SMTP_USER
+        sync: false           # Will be entered manually in Render dashboard
+      - key: SMTP_PASS
+        sync: false           # Will be entered manually in Render dashboard
+      - key: SCHOOL_FROM_EMAIL
+        sync: false           # Will be entered manually in Render dashboard
+      - key: ENROLLMENT_NOTIFY_EMAIL
+        sync: false           # Will be entered manually in Render dashboard
+      - key: PARENT_ENROLLMENT_COPY
+        value: "true"
+
+    # ── Persistent disk (SQLite) ───────────────────────────────────────
+    # Free-tier Render services do NOT support persistent disks.
+    # Uncomment this block when you upgrade to the Starter plan ($7/mo).
+    # Without it, ams.db resets on every deploy — suitable for demo only.
+    # disk:
+    #   name: ams-sqlite-data
+    #   mountPath: /data
+    #   sizeGB: 1
+    # Then update services/database.js → dbPath to:  /data/ams.db

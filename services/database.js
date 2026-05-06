@@ -3,7 +3,10 @@ const path = require('path');
 
 class DatabaseService {
   constructor() {
-    this.dbPath = path.join(__dirname, '..', 'ams.db');
+    // SQLITE_DB_PATH lets you point to a persistent-disk mount on Render.
+    // e.g.  SQLITE_DB_PATH=/data/ams.db  (when disk is mounted at /data)
+    // Falls back to the project-root ams.db for local development.
+    this.dbPath = process.env.SQLITE_DB_PATH || path.join(__dirname, '..', 'ams.db');
     this.db = null;
     this.init();
   }
